@@ -46,3 +46,15 @@ Key learnings -
 - Learned how to use the mongodb database and connect it with our server code.
 - Learned to use jsonWebTokens for authentications.
 - And finally learned to effectively handle the errors.
+
+
+
+## Milestone 4: Project Overview - 
+
+This project demostrate creating a MongoDB schema, integrating file uploads using 'multer', hashing passwords with bcrypt, parsing request bodies with body-parser and securing routes with JWT-based authentication.
+
+features
+MongoDB Schema: Define and manage MongoDB collections using Mongoose. File Uploads: Upload and store files using multer. Password Hashing: Secure user passwords using bcrypt Body Parsing: Parse incoming request bodies using body-parser. JWT Authentication: Project routes a manage authentication tokens.
+
+Technologies Used
+Node.js: Backend runtime environment. Express: Web framework for building APIs. MongoDB: NoSQL database for data storage. Mongoose: ODM library for MongoDB. Multer: Middleware for handling file uploads. Bcrypt: Library for hashing passwords. Body-Parser: Middleware for parsing JSON and URL-encoded data. jsonwebtoken: Library for creating and verifying JWT tokens. 
