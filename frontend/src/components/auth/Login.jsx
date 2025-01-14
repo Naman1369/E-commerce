@@ -1,86 +1,59 @@
-import React, { useState } from "react";
+import { React, useState } from "react";
 
-function LoginPage() {
-  const [credentials, setCreds] = useState({
-    email: '',
-    password: '',
-  });
 
-  const handleChange = (event) => {
-    const { name, value } = event.target;
-    setCreds({
-      ...credentials,
-      [name]: value,
-    });
-  };
+const Login = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-  const handleClickLogin = (event) => {
-    event.preventDefault();
-    // Add Axios for login functionality
-  };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-r from-blue-500 to-purple-600 px-6 py-12">
-      <div className="w-full max-w-md space-y-8 bg-white p-8 rounded-xl shadow-lg">
-        {/* Header */}
-        <div className="text-center">
-          <h2 className="text-3xl font-bold text-gray-800">Sign in to your account</h2>
-        </div>
-
-        {/* Login Form */}
-        <form className="space-y-6" onSubmit={handleClickLogin}>
-          {/* Email Input */}
-          <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-              Email address
-            </label>
-            <input
-              type="email"
-              name="email"
-              id="email"
-              autoComplete="email"
-              required
-              value={credentials.email}
-              onChange={handleChange}
-              className="w-full mt-2 px-4 py-3 border rounded-lg shadow-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
-              placeholder="Enter your email"
-            />
-          </div>
-
-          {/* Password Input */}
-          <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-              Password
-            </label>
-            <input
-              type="password"
-              name="password"
-              id="password"
-              autoComplete="current-password"
-              required
-              value={credentials.password}
-              onChange={handleChange}
-              className="w-full mt-2 px-4 py-3 border rounded-lg shadow-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
-              placeholder="Enter your password"
-            />
-            <div className="text-right mt-2">
-              <a href="#" className="text-sm text-purple-600 hover:text-purple-500">
-                Forgot password?
-              </a>
-            </div>
-          </div>
-
-          {/* Sign In Button */}
-          <button
-            type="submit"
-            className="w-full py-3 bg-purple-600 text-white font-semibold rounded-lg shadow-md hover:bg-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500"
-          >
-            Sign in
-          </button>
-        </form>
+    <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+      <div className="sm:mx-auto sm:w-full sm:max-w-md">
+        <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
+          Login to your account
+        </h2>
       </div>
+      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
+        <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
+            <form className="space-y-6">
+                <div>
+                    <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email address</label>
+                    <div className="mt-1">
+                        <input type="email" name="email" placeholder="Enter email" autoComplete="email" required value={email}
+                        onChange={(e)=>setEmail(e.target.value)}
+                        className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"/>
+                    </div>
+                </div>
+                <div>
+                    <label htmlFor="password" className="block text-sm font-medium text-gray-700">Password</label>
+                    <div className="mt-1">
+                        <input type="password" name="password" placeholder="password" autoComplete="password" required value={password}
+                        onChange={(e)=>setPassword(e.target.value)}
+                        className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"/>
+                    </div>
+                </div>
+                <div className="flex justify-between items-center">
+                    <div className="flex items-center">
+                        <input type="checkbox" name="remember-me" id="remember-me"
+                        className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"/>
+                        <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-900">Remember me</label>
+                    </div>
+                    <div className="text-sm">
+                        <a href=".forgot-password" className="font-medium text-blue-600 hover:text-blue-500">Forgot Password?</a>
+                    </div>
+                </div>
+                <div>
+                    <button type="submit" className="relative w-full h-6 flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700">
+                        Submit
+                    </button>
+                </div>
+            </form>
+        </div>
+      </div>
+      
     </div>
-  );
-}
 
-export default LoginPage;
+  );
+};
+
+export default Login;
