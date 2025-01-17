@@ -1,4 +1,5 @@
 import { React, useState } from "react";
+import { Link } from "react-router-dom";
 
 
 const Login = () => {
@@ -47,6 +48,9 @@ const Login = () => {
                         Submit
                     </button>
                 </div>
+                <p className="text-center">
+                  Do not have accout? <Link to ={'/signup'} className="text-blue-600">signup</Link>
+                </p>
             </form>
         </div>
       </div>
