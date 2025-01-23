@@ -93,3 +93,18 @@ Key learnings -
 
 - We learned and created Login Endpoint.
 - We have also created password and email validation.
+
+
+
+
+****
+
+## Milestone 8: Project Overview -
+
+In this milestone we learned the following things -
+
+Key learnings - 
+
+- We learned and created reusable card component with props for product details (e.g., name, image, price).
+- We have also setup a grid layout or flexbox for displaying multiple cards neatly.
+
