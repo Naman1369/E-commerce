@@ -1,9 +1,8 @@
-
 import {React, useState} from 'react';
 import {AiOutlineEye, AiOutlineEyeInvisible} from 'react-icons/ai';
 import {Link} from 'react-router-dom';
 import {RxAvatar} from 'react-icons/rx';
-// import axios from "axios";
+import axios from "axios";
 import ValidationFormObject from "../../../validation";
 
 const Signup = () => {
@@ -44,15 +43,28 @@ const Signup = () => {
         if(!validateFields()){
             return;
         }
+        const newForm = new FormData();
+        newForm.append("file",avatar);
+        newForm.append("name",name);
+        newForm.append("email",email);
+        newForm.append("password",password);
+    
+        // axios request
+        const config={
+            headers:{
+                "Content-type":"multipart/form-data",
+                "Accept":"any"
+            }
+        }
+        
+        // axios request
+        axios.post("http://localhost:8000/api/v2/user/create-user",newForm,config).then((res)=>{
+            console.log(res.data)
+        }).catch((err)=>{
+            console.log(err)
+        })
     }
 
-    const newForm = new FormData();
-    newForm.append("file",avatar);
-    newForm.append("name",name);
-    newForm.append("email",email);
-    newForm.append("password",password);
-
-    // axios request
     
     return(
         <div className='min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:ph-6 lg-px-8'>

@@ -1,6 +1,6 @@
 
 const validationFormObject={
-    validDateName:(name)=>{
+    validateName:(name)=>{
         const nameRegex=  /^[a-zA-Z][a-zA-Z\s'-]{1,49}$/;
         if(name.length<2){
             return 'Name cannot have less than 2 leeters'
