@@ -8,9 +8,9 @@ const Login = () => {
   const [error, setError] = useState("")
 
   const handleSubmit = async(e)=>{
-    e.preventDefualt()
-    try {
-      const response = await axios.post("http://localhost:8000/api/v2/user/login",{email,password})
+    e.preventDefault();
+    try{
+      const response = await axios.post("http://localhost:8000/api/v2/user/login",{email,password});
       console.log(response.data)
     }catch(error){
       setError("Invalid Credentials!")

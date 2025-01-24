@@ -1,4 +1,5 @@
-import React from "react";
+
+import React from 'react'
 import Product from "../components/auth/Product";
 
 const productDetails=[
@@ -61,17 +62,19 @@ const productDetails=[
         image:"https://media.istockphoto.com/id/1319625327/photo/shopping-basket-full-of-variety-of-grocery-products-food-and-drink-on-yellow-background.jpg?s=612x612&w=0&k=20&c=GHyTjlkoFweJnbAadmn4tzEYvfiB73MTe93KMT3GIM0=",
         description:"This is the special product",
         price:1000
-    },
-]
+    }
+
+];
 
 export default function Home(){
     return(
-        <div className='w-full min-h-screen bg-neutral-800 '>
-            <div className='grid grid-cols-5 gap-5 p-4'>
+        <div className='w-full min-h-screen bg-neutral-800'>
+            <div className='grid grid-cols-5 gap-4 p-4'>
                 {productDetails.map((product,index)=>(
                     <Product key={index} {...product}/>
-            ))}
+                ))}
             </div>
         </div>
     )
+
 }
