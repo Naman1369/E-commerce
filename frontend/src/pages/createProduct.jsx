@@ -30,7 +30,7 @@ const CreateProduct = () => {
 
     useEffect(() => {
         return() => {
-            prevImages.forEach((url) => URL.revokeObjectURL(url))
+            previewImages.forEach((url) => URL.revokeObjectURL(url))
         }
     },[previewImages])
 
@@ -123,8 +123,8 @@ const CreateProduct = () => {
                             <AiOutlinePlusCircle size={30} color='#555' />
                         </label>
                         <div className='flex flex-wrap mt-2'>
-                            {prevImages.map((img, index) => (
-                                <img src={img} key={index} alt={Preview} className='w-[100px] h-[100px] object-cover m-2 rounded-md' />
+                            {previewImages.map((img, index) => (
+                                <img src={img} key={index} alt={previewImages} className='w-[100px] h-[100px] object-cover m-2 rounded-md' />
                             ))}
                         </div>
                     </div>
