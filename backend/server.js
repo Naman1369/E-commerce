@@ -9,8 +9,8 @@ const app=require('./App')
 //Handling uncaught execptions
 
 process.on("uncaugthExecption",(err)=>{
-    console.log(`Erro:${err.message}`)
-    console.log(`shutting down the server for handling uncaught execption`)
+    console.log(`Error:${err.message}`)
+    console.log(`shutting down the server for handling uncaught exception`)
 })
 
 

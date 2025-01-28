@@ -29,7 +29,7 @@ module.exports=(err,req,res,next)=>{
     }
 
     res.status(err.statusCode).json({
-        succes:false,
+        success:false,
         message:err.message
     })
 }

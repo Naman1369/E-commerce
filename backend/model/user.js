@@ -19,7 +19,7 @@ const userSchema=new mongoose.Schema({
     },
     phoneNumber:{
         type:Number,
-        maxLenght:[10,"dont exceed more than 10 digits"]
+        maxLength:[10,"don't exceed more than 10 digits"]
     },
     addresses:[
         {
