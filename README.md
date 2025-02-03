@@ -93,3 +93,42 @@ Key learnings -
 
 - We learned and created Login Endpoint.
 - We have also created password and email validation.
+
+
+
+
+## Milestone 8: Project Overview -
+
+In this milestone we learned the following things -
+
+Key learnings - 
+
+- We learned and created reusable card component with props for product details (e.g., name, image, price).
+- We have also setup a grid layout or flexbox for displaying multiple cards neatly.
+
+## Milestone 9: Project Overview -
+
+In this milestone we learned the following things -
+
+Key learnings - 
+
+- We Create the form for products.
+- We have also made this form functional such that this form will take multiple product images as input.
+
+## Milestone 10: Project Overview -
+
+In this milestone we learned the following things -
+
+Key learnings - 
+
+- We have created an endpoint to create a product.
+- We have also configured the multer to upload the multiples images of the product.
+
+## Milestone 11: Project Overview -
+
+In this milestone we learned the following things -
+
+Key learnings - 
+
+- We have created an endpoint that will send data from extract and send data from mongodb.
+- We have also receive data at frontend and display that data dynamically using product card created earlier.

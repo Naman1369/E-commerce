@@ -5,6 +5,7 @@ const cookieParser=require('cookie-parser')
 const bodyParser=require('body-parser')
 const app=express()  
 const cors=require('cors')
+const path=require('path')
 
 
 app.use(express.json())
@@ -20,6 +21,9 @@ if(process.env.NODE_ENV !== "PRODUCTION"){
         path:'backend/config/.env'
     })
 }
+
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use('/products', express.static(path.join(__dirname, 'products')));
 
 //Import router
 const user=require('./controller/user')
