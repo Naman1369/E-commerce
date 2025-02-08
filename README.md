@@ -155,4 +155,16 @@ In this milestone we learned the following things -
 Key learnings - 
 
 - We have created an an endpoint that will update the existing data in MongoDB.
-- We have also implemented the logic of auto filling the form with previous data and give option to edit.
+- We have also implemented the logic of auto filling the form with previous data and give option to edit. 
+
+
+
+
+## Milestone 14: Project Overview -
+
+In this milestone we learned the following things -
+
+Key learnings - 
+
+- We have created an endpoint that delete the product with specific ID from MongoDB.
+ 
