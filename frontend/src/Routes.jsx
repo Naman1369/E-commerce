@@ -4,6 +4,7 @@ import Home from './pages/Home';
 import CreateProduct from './pages/createProduct';
 import MyProducts from './pages/myProduct';
 import Cart from './pages/cart'
-export {LoginPage,SignupPage,Home,CreateProduct,MyProducts,Cart};
+import ProductDetails from './pages/poductDetails'
+export {LoginPage,SignupPage,Home,CreateProduct,MyProducts,Cart,ProductDetails};
 
 

@@ -178,3 +178,14 @@ Key learnings -
 
 - We have created an new Navbar with links to all pages.
 - We have also implemented the Navbar responsive to all screen sizes.
+
+
+
+## Milestone 16: Project Overview - 
+
+In this milestone we learned the following things - 
+
+Key learnings - 
+
+- We have created a product details page where if click on "more info" it shows the information of the product.
+- We have also created two buttons to increase and decrease the quantity of the product.
