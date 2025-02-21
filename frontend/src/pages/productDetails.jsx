@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
@@ -12,7 +11,7 @@ const ProductDetails = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [quantity, setQuantity] = useState(1);
-  const email="namanbinu123@gmail.com"
+  const email="naman123@gmail.com"
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -38,7 +37,7 @@ const ProductDetails = () => {
 }, [product]);
 
   const handleIncrement = () => setQuantity((prev) => prev + 1);
-  const handleDecrement = () => setQuantity((prev) => (prev >= 1 ? prev - 1 : 0));
+  const handleDecrement = () => setQuantity((prev) => (prev > 1 ? prev - 1 : 1));
 
   const addtocart = async () => {
     try {

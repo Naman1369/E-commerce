@@ -1,69 +1,72 @@
 const mongoose=require('mongoose')
-const bcrypt=require('bcrypt')
-const jwt=require('jsonwebtoken')
+// const bcrypt=require('bcrypt')
+// const jwt=require('jsonwebtoken')
 
-const userSchema=new mongoose.Schema({
-    name:{
-        type:String, 
-        required:[true,"Please enter your name!"]
+const userSchema = new mongoose.Schema({
+    name: {
+        type: String,
+        required: [true, "Please enter your name!"]
     },
-    email:{
-        type:String,
-        required:[true,"Please enter your email!"]
+    email: {
+        type: String,
+        required: [true, "Please enter your email!"]
     },
-    password:{
-        type:String,
-        required:[true,"Please enter your password!"],
-        minLength:[4,"password should be greater than 4 characters"],
-        select:false
+    password: {
+        type: String,
+        required: [true, "Please enter your password!"],
+        minLength: [4, "Password should be greater than 4 characters"],
+        select: false
     },
-    phoneNumber:{
-        type:Number,
-        maxLength:[10,"don't exceed more than 10 digits"]
+    phoneNumber: {
+        type: Number,
+        maxLength: [10, "Don't exceed more than 10 digits"]
     },
-    addresses:[
+    addresses: [
         {
-            country:{
-                type:String,
-            },
-            city:{
-                type:String,
-            },
-            address1:{
-                type:String,
-            },
-            address2:{
-                type:String,
-            },
-            zipCode:{
-                type:Number
-            },
-            addressType:{
-                type:String
-            },
+            country: { type: String },
+            city: { type: String },
+            address1: { type: String },
+            address2: { type: String },
+            zipCode: { type: Number },
+            addressType: { type: String },
         }
     ],
-    role:{
-        type:String,
-        default:"user",
+    role: {
+        type: String,
+        default: "user",
     },
-    avatar:{
-        public_id:{
-            type:String,
-            required:true,
+    avatar: {
+        public_id: {
+            type: String,
+            required: true,
         },
-        url:{
-            type:String,
-            required:true
+        url: {
+            type: String,
+            required: true
         },
     },
-    createdAt:{
-        type:Date,
-        default:Date.now(),
+    cart: [  // ✅ Correctly placed at the root
+        {
+            productId: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "Product",
+                required: true,
+            },
+            quantity: {
+                type: Number,
+                required: true,
+                min: [1, "Quantity cannot be less than 1"],
+                default: 1,
+            },
+        },
+    ],
+    createdAt: {
+        type: Date,
+        default: Date.now(),
     },
-    resetPasswordToken:String,
-    resetPasswordTime:Date,
-})
+    resetPasswordToken: String,
+    resetPasswordTime: Date,
+});
 
 
 //Hash password
