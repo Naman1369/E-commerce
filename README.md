@@ -189,3 +189,34 @@ Key learnings -
 
 - We have created a product details page where if click on "more info" it shows the information of the product.
 - We have also created two buttons to increase and decrease the quantity of the product.
+
+
+
+## Milestone 17: Project Overview - 
+
+In this milestone we learned the following things-
+
+Key learnings -
+
+- We have edited the user schema to store cart products.
+
+- We have also implemented an end point to receive the product details and store in database.
+
+
+
+## Milestone 18 - 
+
+In this milestone we learned -
+
+Key learnings - 
+
+- We have create an endpoint to receive request from cart page.
+- We have also create an backend endpoint to fetch all the products inside cart with user mail.
+
+
+
+## Milestone 19 - 
+
+In this milestone we learned - 
+
+Key learning - 
