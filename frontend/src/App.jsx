@@ -1,5 +1,5 @@
 import {BrowserRouter,Routes,Route} from 'react-router-dom';
-import {LoginPage,SignupPage,Home, CreateProduct,MyProducts,Cart,ProductDetails} from './Routes.jsx'
+import {LoginPage,SignupPage,Home, CreateProduct,MyProducts,Cart,ProductDetails,Profile} from './Routes.jsx'
 
 import './App.css';
 
@@ -15,6 +15,7 @@ function App() {
       <Route path="/my-products" element={<MyProducts/>}/>
       <Route path="/cart" element={<Cart/>}/>
       <Route path="/product/:id" element={<ProductDetails/>}/>
+      <Route path="/profile" element={<Profile/>}/>
     </Routes>
     </BrowserRouter>
  

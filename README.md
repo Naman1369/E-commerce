@@ -220,3 +220,20 @@ Key learnings -
 In this milestone we learned - 
 
 Key learning - 
+
+- We have create an cart page that display the products inside cart using endpoint we build in milestone 18.
+- We have also implemented the logic for each product where an add option is made available to increase and decrease quantity using + and - buttons.
+- We have also created an endpoint to increase and decrease the quantity
+
+
+
+
+## Milestone 20: Project Overview -
+
+In this milestone we learned the following things -
+
+Key learnings - 
+
+- We have create an Backend endpoint that will sent user data.
+- Also create frontend profile page that will display profile photo, name and email in one section. If there are no address display "No address found".
+- In another section we have displayed address and added an button called "Add address".
