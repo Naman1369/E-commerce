@@ -278,9 +278,19 @@ Key learnings -
 
 
 
-
 ## Milestone 24: Project Overview -
 
 In this milestone we learned the following things - 
 
 Key learnings - 
+
+- First we display all products we are ordering then we displayed the address user wants to select.
+- Next we displayed the total value of the cart along with a place order button at the bottom.
+
+
+
+## Milestone 25: Project Overview - 
+
+In this milestone we configured the backend for the place order page.
+
+
