@@ -1,7 +1,8 @@
 import {BrowserRouter,Routes,Route} from 'react-router-dom';
-import {LoginPage,SignupPage,Home, CreateProduct,MyProducts,Cart,ProductDetails,Profile,CreateAddress,SelectAddress,OrderConfirmation} from './Routes.jsx'
+import {LoginPage,SignupPage,Home, CreateProduct,MyProducts,Cart,ProductDetails,Profile,CreateAddress,SelectAddress,OrderConfirmation,MyOrdersPage} from './Routes.jsx'
 
 import './App.css';
+// import MyOrdersPage from './pages/myorders.jsx';
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
       <Route path="/create-address" element={<CreateAddress/>}/>
       <Route path="/select-address" element={<SelectAddress/>}/>
       <Route path="/order-confirmation" element={<OrderConfirmation/>}/>
+      <Route path="/myorders" element={<MyOrdersPage/>}></Route>
 
     </Routes>
     </BrowserRouter>
