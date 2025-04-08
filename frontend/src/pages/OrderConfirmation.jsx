@@ -65,7 +65,7 @@ const handlePlaceOrder = async (
     paymentType = "cod",
     paypalOrderData = null
   ) => {
-    try {
+    try { 
       // Prepare order items
       const orderItems = cartItems.map((item) => ({
         product: item._id,
