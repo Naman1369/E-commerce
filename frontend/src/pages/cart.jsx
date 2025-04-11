@@ -2,14 +2,17 @@ import CartProduct from '../components/auth/CartProduct';
 import Nav from '../components/auth/nav';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux'; // Import useSelector
 
 const Cart = () => {
 
     const [products, setProducts] = useState([]);
-    const email="naman123@gmail.com"
+
     const navigate = useNavigate();
 
+    const email = useSelector((state) => state.user.email);
     useEffect(() => {
+      if (!email) return alert("Error in Display!");
         fetch(`http://localhost:8000/api/v2/product/cartproducts?email=${email}`)
           .then((res) => {
             if (!res.ok) {
@@ -24,7 +27,7 @@ const Cart = () => {
           .catch((err) => {
             console.error(" Error fetching products:", err);
           });
-      }, []);
+      }, [email]);
     
       console.log("Products:", products);
 

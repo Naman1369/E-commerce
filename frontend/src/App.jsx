@@ -2,7 +2,7 @@ import {BrowserRouter,Routes,Route} from 'react-router-dom';
 import {LoginPage,SignupPage,Home, CreateProduct,MyProducts,Cart,ProductDetails,Profile,CreateAddress,SelectAddress,OrderConfirmation,MyOrdersPage} from './Routes.jsx'
 
 import './App.css';
-// import MyOrdersPage from './pages/myorders.jsx';
+
 
 function App() {
   return (
