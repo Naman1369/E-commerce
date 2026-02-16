@@ -1,78 +1,71 @@
-import React, { useEffect, useState } from "react";
-import PropTypes from "prop-types"
-import { useNavigate } from 'react-router-dom'
-import axios from 'axios'
-import API_BASE from '../../api';
+import PropTypes from "prop-types";
+import React from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { useSelector } from "react-redux";
+import API_BASE from "../../api";
+import { Edit3, Trash2 } from "lucide-react";
 
-const Myproduct = ({ _id, name, images, description, price }) => {
-    const [currentIndex, setCurrentIndex] = useState(0)
-    const navigate = useNavigate()
-
-    useEffect(() => {
-        if (!images || images.length === 0) return;
-        const interval = setInterval(() => {
-            setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length)
-        }, 2000);
-        return () => clearInterval(interval)
-    }, [images])
-
-    const handleEdit = () => {
-        navigate(`/create-product/${_id}`)
-    }
+const MyProduct = ({ _id, name, images, description, price }) => {
+    const navigate = useNavigate();
+    const email = useSelector((state) => state.user.email);
 
     const handleDelete = async () => {
+        if (!window.confirm("Delete this product permanently?")) return;
         try {
-            const response = await axios.delete(`${API_BASE}/api/v2/product/delete-product/${_id}`);
-            if (response.status === 200) {
-                alert("Product Deleted");
-                window.location.reload();
-            }
-        } catch (err) {
-            console.error(`Error deleting product:${err}`);
-            alert("Failed to delete the product")
+            await axios.delete(`${API_BASE}/api/v2/product/delete-product/${_id}`, {
+                data: { email },
+            });
+            window.location.reload();
+        } catch (error) {
+            console.error("Error deleting product:", error);
         }
-    }
+    };
 
-    const currentImage = images && images.length > 0 ? images[currentIndex] : null
+    const imgSrc = images && images.length > 0 ? `${API_BASE}${images[0]}` : "/default-avatar.png";
 
     return (
-        <div className="bg-neutral-200 p-4 rounded-lg shadow-md flex flex-col justify-between">
-            <div className="w-full">
-                {currentImage && (
-                    <img
-                        src={`${API_BASE}${currentImage}`}
-                        alt={name}
-                        className="w-full h-56 object-cover rounded-lg mb-2"
-                    />
-                )}
-                <h2 className="text-lg font-bold">{name}</h2>
-                <p className="text-sm opacity-75 mt-2">{description}</p>
+        <div className="card !p-0 overflow-hidden group">
+            {/* Image */}
+            <div className="relative w-full h-48 overflow-hidden">
+                <img
+                    src={imgSrc}
+                    alt={name}
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                />
+                {/* Action buttons overlay */}
+                <div className="absolute top-3 right-3 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <button
+                        onClick={() => navigate(`/create-product/${_id}`)}
+                        className="w-9 h-9 rounded-xl bg-slate-900/80 backdrop-blur-sm border border-slate-600/30 flex items-center justify-center text-indigo-400 hover:text-white hover:bg-indigo-500 transition-all"
+                    >
+                        <Edit3 size={16} />
+                    </button>
+                    <button
+                        onClick={handleDelete}
+                        className="w-9 h-9 rounded-xl bg-slate-900/80 backdrop-blur-sm border border-slate-600/30 flex items-center justify-center text-red-400 hover:text-white hover:bg-red-500 transition-all"
+                    >
+                        <Trash2 size={16} />
+                    </button>
+                </div>
             </div>
-            <div className="w-full mt-4">
-                <p className="text-lg font-bold my-2">${price.toFixed(2)}</p>
-                <button
-                    className="w-full text-white px-4 py-2 rounded-md bg-neutral-900 hover:bg-neutral-700 transition duration-300 mb-2"
-                    onClick={handleEdit}
-                >
-                    Edit
-                </button>
-                <button
-                    className="w-full text-white px-4 py-2 rounded-md bg-red-500 hover:bg-red-400 transition duration-300"
-                    onClick={handleDelete}
-                >
-                    Delete
-                </button>
+
+            {/* Content */}
+            <div className="p-4">
+                <h3 className="text-white font-semibold truncate mb-1">{name}</h3>
+                <p className="text-slate-400 text-sm line-clamp-2 mb-3">{description}</p>
+                <p className="text-lg font-bold text-gradient">${price.toFixed(2)}</p>
             </div>
         </div>
     );
-}
+};
 
-Myproduct.propTypes = {
+MyProduct.propTypes = {
     _id: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
-    images: PropTypes.arrayOf(PropTypes.string).isRequired,
-    description: PropTypes.string.isRequired,
-    price: PropTypes.number.isRequired
-}
+    images: PropTypes.arrayOf(PropTypes.string),
+    description: PropTypes.string,
+    price: PropTypes.number.isRequired,
+};
 
-export default Myproduct;
+export default MyProduct;

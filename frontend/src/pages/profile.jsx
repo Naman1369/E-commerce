@@ -1,134 +1,127 @@
 import React, { useEffect, useState } from "react";
-import AddressCard from "../components/auth/AddressCard";
+import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import axios from "axios";
 import NavBar from "../components/auth/nav";
-import { useNavigate } from "react-router-dom"
-import { useSelector } from 'react-redux';
-import API_BASE from '../api';
+import AddressCard from "../components/auth/AddressCard";
+import API_BASE from "../api";
+import { User, Mail, Phone, MapPin, Plus, LogOut } from "lucide-react";
 
-export default function Profile() {
-	const [personalDetails, setPersonalDetails] = useState({
-		name: "",
-		email: "",
-		phoneNumber: "",
-		avatarUrl: "",
-	});
-	const navigate = useNavigate();
+const Profile = () => {
+	const [user, setUser] = useState(null);
+	const [loading, setLoading] = useState(true);
 	const email = useSelector((state) => state.user.email);
-
-	const [addresses, setAddresses] = useState([]);
+	const navigate = useNavigate();
 
 	useEffect(() => {
-		if (!email) return;
-		fetch(
-			`${API_BASE}/api/v2/user/profile?email=${email}`,
-			{
-				method: "GET",
-				headers: {
-					"Content-Type": "application/json",
-				},
-			}
-		)
-			.then((res) => {
-				if (!res.ok) {
-					throw new Error(`HTTP error! status: ${res.status}`);
-				}
-				return res.json();
-			})
-			.then((data) => {
-				setPersonalDetails(data.user);
-				setAddresses(data.addresses);
-			})
-			.catch((err) => {
+		if (!email) { setLoading(false); return; }
+		const fetchProfile = async () => {
+			try {
+				const response = await axios.get(`${API_BASE}/api/v2/user/profile`, { params: { email } });
+				setUser(response.data.user);
+			} catch (err) {
 				console.error("Error fetching profile:", err);
-			});
+			} finally {
+				setLoading(false);
+			}
+		};
+		fetchProfile();
 	}, [email]);
 
-	const handleAddAddress = () => {
-		navigate("/create-address");
-	};
+	if (loading) {
+		return (
+			<div className="min-h-screen gradient-bg">
+				<NavBar />
+				<div className="flex items-center justify-center py-32">
+					<div className="w-12 h-12 border-3 border-indigo-500/20 border-t-indigo-500 rounded-full animate-spin"></div>
+				</div>
+			</div>
+		);
+	}
+
+	if (!email || !user) {
+		return (
+			<div className="min-h-screen gradient-bg">
+				<NavBar />
+				<div className="flex flex-col items-center justify-center py-32">
+					<p className="text-slate-400 text-lg mb-4">Please log in to view your profile.</p>
+					<button onClick={() => navigate("/login")} className="btn-primary">Sign In</button>
+				</div>
+			</div>
+		);
+	}
 
 	return (
-		<>
+		<div className="min-h-screen gradient-bg">
 			<NavBar />
-			<div className="w-full min-h-screen bg-neutral-800 p-5">
-				<div className="w-full h-full bg-neutral-700 rounded-lg">
-					<div className="w-full h-max my-2 p-5">
-						<div className="w-full h-max">
-							<h1 className="text-3xl text-neutral-100">
-								Personal Details
-							</h1>
-						</div>
-						<div className="w-full h-max flex flex-col sm:flex-row p-5 gap-10">
-							<div className="w-40 h-max flex flex-col justify-center items-center gap-y-3">
-								<div className="w-full h-max text-2xl text-neutral-100 text-left">
-									PICTURE
-								</div>
+			<div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+				{/* Profile Header */}
+				<div className="card mb-6">
+					<div className="flex flex-col sm:flex-row items-center gap-6">
+						{/* Avatar */}
+						<div className="w-24 h-24 rounded-2xl overflow-hidden ring-2 ring-indigo-500/30 ring-offset-2 ring-offset-slate-900 flex-shrink-0">
+							{user.avatar ? (
 								<img
-									src={personalDetails.avatarUrl ? `${API_BASE}/${personalDetails.avatarUrl}` : `https://cdn.vectorstock.com/i/500p/17/61/male-avatar-profile-picture-vector-10211761.jpg`}
-									alt="profile"
-									className="w-40 h-40 rounded-full object-cover"
-									onError={(e) => {
-										e.target.onerror = null;
-										e.target.src = `https://cdn.vectorstock.com/i/500p/17/61/male-avatar-profile-picture-vector-10211761.jpg`;
-									}}
+									src={`${API_BASE}${user.avatar}`}
+									alt={user.name}
+									className="w-full h-full object-cover"
 								/>
-							</div>
-							<div className="h-max md:flex-grow">
-								<div className="w-full h-max flex flex-col justify-center items-center gap-y-3">
-									<div className="w-full h-max">
-										<div className="text-2xl text-neutral-100 text-left">
-											NAME
-										</div>
-										<div className="text-lg font-light text-neutral-100 text-left break-all">
-											{personalDetails.name}
-										</div>
-									</div>
-									<div className="w-full h-max">
-										<div className="text-2xl text-neutral-100 text-left">
-											EMAIL
-										</div>
-										<div className="text-lg font-light text-neutral-100 text-left break-all">
-											{personalDetails.email}
-										</div>
-									</div>
-									<div className="w-full h-max">
-										<div className="text-2xl text-neutral-100 text-left">
-											MOBILE
-										</div>
-										<div className="text-lg font-light text-neutral-100 text-left break-all">
-											{personalDetails.phoneNumber || 'Not set'}
-										</div>
-									</div>
+							) : (
+								<div className="w-full h-full gradient-primary flex items-center justify-center text-3xl font-bold text-white">
+									{user.name?.charAt(0).toUpperCase()}
 								</div>
+							)}
+						</div>
+						{/* Info */}
+						<div className="text-center sm:text-left flex-1">
+							<h1 className="text-2xl font-bold text-white mb-1">{user.name}</h1>
+							<div className="flex flex-col sm:flex-row gap-3 text-sm text-slate-400">
+								<span className="flex items-center gap-1.5 justify-center sm:justify-start">
+									<Mail size={14} className="text-indigo-400" /> {user.email}
+								</span>
+								<span className="flex items-center gap-1.5 justify-center sm:justify-start">
+									<Phone size={14} className="text-indigo-400" /> {user.phoneNumber || "Not set"}
+								</span>
 							</div>
-						</div>
-					</div>
-					<div className="w-full h-max my-2 p-5">
-						<div className="w-full h-max">
-							<h1 className="text-3xl text-neutral-100">
-								Addresses
-							</h1>
-						</div>
-						<div className="w-full h-max p-5">
-							<button className="w-max px-3 py-2 bg-neutral-600 text-neutral-100 rounded-md text-center hover:bg-neutral-100 hover:text-black transition-all duration-100"
-								onClick={handleAddAddress}
-							>
-								Add Address
-							</button>
-						</div>
-						<div className="w-full h-max flex flex-col gap-5 p-5">
-							{addresses.length === 0 ? (
-								<div className="w-full h-max text-neutral-100 font-light text-left">
-									No Addresses Found
-								</div>
-							) : null}
-							{addresses.map((address, index) => (
-								<AddressCard key={index} {...address} />
-							))}
 						</div>
 					</div>
 				</div>
+
+				{/* Addresses */}
+				<div className="flex items-center justify-between mb-4">
+					<h2 className="text-lg font-semibold text-white flex items-center gap-2">
+						<MapPin size={18} className="text-indigo-400" />
+						Saved Addresses
+					</h2>
+					<button
+						onClick={() => navigate("/create-address")}
+						className="btn-secondary !py-2 !px-3 text-sm flex items-center gap-1.5"
+					>
+						<Plus size={16} /> Add
+					</button>
+				</div>
+
+				{user.addresses && user.addresses.length > 0 ? (
+					<div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+						{user.addresses.map((addr) => (
+							<AddressCard key={addr._id} {...addr} />
+						))}
+					</div>
+				) : (
+					<div className="card text-center py-12">
+						<MapPin size={32} className="text-slate-600 mx-auto mb-3" />
+						<p className="text-slate-400">No addresses saved yet.</p>
+						<button
+							onClick={() => navigate("/create-address")}
+							className="btn-primary mt-4 text-sm"
+						>
+							Add Your First Address
+						</button>
+					</div>
+				)}
 			</div>
-		</>
+		</div>
 	);
-}
+};
+
+export default Profile;

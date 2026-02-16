@@ -1,145 +1,101 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
-import Nav from '../components/auth/nav';
-import API_BASE from '../api';
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import NavBar from "../components/auth/nav";
+import API_BASE from "../api";
+import { MapPin, Plus, ChevronRight, Home, Briefcase, MoreHorizontal } from "lucide-react";
+
+const iconMap = { Home, Office: Briefcase, Other: MoreHorizontal };
 
 const SelectAddress = () => {
     const [addresses, setAddresses] = useState([]);
     const [selectedAddress, setSelectedAddress] = useState(null);
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
     const navigate = useNavigate();
     const email = useSelector((state) => state.user.email);
 
     useEffect(() => {
         if (!email) return;
-        const fetchAddresses = async () => {
-            try {
-                const response = await fetch(`${API_BASE}/api/v2/user/addresses?email=${email}`);
-                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-                const data = await response.json();
-                setAddresses(data.addresses);
-                setLoading(false);
-            } catch (err) {
-                setError(err.message);
-                setLoading(false);
-            }
-        };
-        fetchAddresses();
+        fetch(`${API_BASE}/api/v2/user/addresses?email=${email}`)
+            .then(res => res.json())
+            .then(data => { setAddresses(data.addresses || []); setLoading(false); })
+            .catch(() => setLoading(false));
     }, [email]);
 
-    const handleSelectAddress = (addressId) => {
-        setSelectedAddress(addressId);
-    };
-
     const handleContinue = () => {
-        if (!selectedAddress) {
-            alert('Please select an address');
-            return;
-        }
-        navigate('/order-confirmation', {
-            state: { addressId: selectedAddress, email }
-        });
+        if (!selectedAddress) { alert("Please select an address"); return; }
+        navigate("/order-confirmation", { state: { addressId: selectedAddress, email } });
     };
-
-    if (loading) {
-        return (
-            <>
-                <Nav />
-                <div className="w-full min-h-screen flex justify-center items-center">
-                    <p className="text-lg">Loading addresses...</p>
-                </div>
-            </>
-        );
-    }
-
-    if (error) {
-        return (
-            <>
-                <Nav />
-                <div className="w-full min-h-screen flex flex-col justify-center items-center">
-                    <p className="text-red-500 text-lg mb-4">Error: {error}</p>
-                    <button
-                        onClick={() => window.location.reload()}
-                        className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
-                    >
-                        Retry
-                    </button>
-                </div>
-            </>
-        );
-    }
 
     return (
-        <>
-            <Nav />
-            <div className="min-h-screen bg-gray-50 py-8">
-                <div className="max-w-3xl mx-auto px-4">
-                    <h2 className="text-3xl font-bold text-center mb-8">Select Shipping Address</h2>
-                    {addresses.length > 0 ? (
-                        <div className="space-y-4">
-                            {addresses.map((address) => (
+        <div className="min-h-screen gradient-bg">
+            <NavBar />
+            <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                <div className="flex items-center gap-3 mb-8">
+                    <div className="w-10 h-10 rounded-xl gradient-primary flex items-center justify-center">
+                        <MapPin size={20} className="text-white" />
+                    </div>
+                    <h1 className="text-2xl font-bold text-white">Select Address</h1>
+                </div>
+
+                {loading ? (
+                    <div className="flex items-center justify-center py-20">
+                        <div className="w-12 h-12 border-3 border-indigo-500/20 border-t-indigo-500 rounded-full animate-spin"></div>
+                    </div>
+                ) : addresses.length > 0 ? (
+                    <div className="space-y-3">
+                        {addresses.map((addr) => {
+                            const Icon = iconMap[addr.addressType] || MapPin;
+                            return (
                                 <div
-                                    key={address._id}
-                                    className={`p-4 rounded-lg border-2 cursor-pointer transition-all ${selectedAddress === address._id
-                                            ? 'border-blue-500 bg-blue-50 shadow-lg'
-                                            : 'border-gray-200 bg-white hover:border-gray-300 hover:shadow-md'
+                                    key={addr._id}
+                                    onClick={() => setSelectedAddress(addr._id)}
+                                    className={`card !p-4 cursor-pointer flex items-center gap-4 transition-all ${selectedAddress === addr._id
+                                            ? "!border-indigo-500 ring-2 ring-indigo-500/20"
+                                            : ""
                                         }`}
-                                    onClick={() => handleSelectAddress(address._id)}
                                 >
-                                    <div className="flex items-start gap-3">
-                                        <input
-                                            type="radio"
-                                            name="address"
-                                            checked={selectedAddress === address._id}
-                                            onChange={() => handleSelectAddress(address._id)}
-                                            className="mt-1"
-                                        />
-                                        <div>
-                                            <p className="font-medium text-gray-900">
-                                                {address.address1}
-                                                {address.address2 ? `, ${address.address2}` : ''}
-                                            </p>
-                                            <p className="text-gray-600">
-                                                {address.city}, {address.country} - {address.zipCode}
-                                            </p>
-                                            <span className="inline-block mt-1 px-2 py-0.5 text-xs bg-gray-200 text-gray-700 rounded-full">
-                                                {address.addressType}
-                                            </span>
-                                        </div>
+                                    <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-all ${selectedAddress === addr._id ? "border-indigo-500" : "border-slate-600"
+                                        }`}>
+                                        {selectedAddress === addr._id && (
+                                            <div className="w-2.5 h-2.5 rounded-full bg-indigo-500"></div>
+                                        )}
                                     </div>
+                                    <div className="w-10 h-10 rounded-xl bg-indigo-500/10 flex items-center justify-center flex-shrink-0">
+                                        <Icon size={18} className="text-indigo-400" />
+                                    </div>
+                                    <div className="flex-1 min-w-0">
+                                        <p className="text-white font-medium text-sm">{addr.address1}</p>
+                                        <p className="text-slate-400 text-sm truncate">
+                                            {addr.city}, {addr.country} — {addr.zipCode}
+                                        </p>
+                                    </div>
+                                    <span className="badge bg-slate-700 text-slate-300 text-xs">{addr.addressType}</span>
                                 </div>
-                            ))}
-                            <div className="flex justify-between mt-6">
-                                <button
-                                    onClick={() => navigate('/create-address')}
-                                    className="bg-gray-200 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-300 transition-colors"
-                                >
-                                    + Add New Address
-                                </button>
-                                <button
-                                    onClick={handleContinue}
-                                    className="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition-colors"
-                                >
-                                    Continue
-                                </button>
-                            </div>
-                        </div>
-                    ) : (
-                        <div className="text-center py-10">
-                            <p className="text-gray-500 text-lg mb-4">No addresses found. Add one to continue.</p>
-                            <button
-                                onClick={() => navigate('/create-address')}
-                                className="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition-colors"
-                            >
-                                + Add Address
+                            );
+                        })}
+
+                        <div className="flex justify-between pt-4">
+                            <button onClick={() => navigate("/create-address")} className="btn-secondary flex items-center gap-1.5 text-sm">
+                                <Plus size={16} /> New Address
+                            </button>
+                            <button onClick={handleContinue} className="btn-primary flex items-center gap-1.5">
+                                Continue <ChevronRight size={18} />
                             </button>
                         </div>
-                    )}
-                </div>
+                    </div>
+                ) : (
+                    <div className="card text-center py-16">
+                        <MapPin size={40} className="text-slate-600 mx-auto mb-4" />
+                        <h3 className="text-lg font-semibold text-white mb-2">No addresses found</h3>
+                        <p className="text-slate-400 mb-6">Add a shipping address to continue.</p>
+                        <button onClick={() => navigate("/create-address")} className="btn-primary">
+                            Add Address
+                        </button>
+                    </div>
+                )}
             </div>
-        </>
+        </div>
     );
 };
 

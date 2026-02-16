@@ -1,101 +1,88 @@
-import React, { useState, useEffect } from "react";
-import { IoIosAdd, IoIosRemove } from "react-icons/io";
 import PropTypes from "prop-types";
-import { useSelector } from 'react-redux';
-import API_BASE from '../../api';
+import React from "react";
+import axios from "axios";
+import API_BASE from "../../api";
+import { useSelector } from "react-redux";
+import { Minus, Plus, Trash2 } from "lucide-react";
 
-export default function CartProduct({ _id, name, images, quantity, price }) {
-    const [currentIndex, setCurrentIndex] = useState(0);
-    const [quantityVal, setQuantityVal] = useState(quantity);
+const CartProduct = ({ _id, name, images, price, quantity, onQuantityChange, onRemove }) => {
     const email = useSelector((state) => state.user.email);
 
-    useEffect(() => {
-        if (!images || images.length === 0) return;
-        const interval = setInterval(() => {
-            setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
-        }, 3000);
-        return () => clearInterval(interval);
-    }, [images]);
-
-    const handleIncrement = () => {
-        const newquantityVal = quantityVal + 1;
-        setQuantityVal(newquantityVal);
-        updateQuantityVal(newquantityVal);
-    };
-
-    const handleDecrement = () => {
-        const newquantityVal = quantityVal > 1 ? quantityVal - 1 : 1;
-        setQuantityVal(newquantityVal);
-        updateQuantityVal(newquantityVal);
-    };
-
-    const updateQuantityVal = (quantity) => {
-        fetch(`${API_BASE}/api/v2/product/cartproduct/quantity`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
+    const updateQuantity = async (newQty) => {
+        if (newQty < 1) return;
+        try {
+            await axios.put(`${API_BASE}/api/v2/product/cartproduct/quantity`, {
                 email,
                 productId: _id,
-                quantity,
-            }),
-        })
-            .then((res) => {
-                if (!res.ok) {
-                    throw new Error(`HTTP error! status: ${res.status}`);
-                }
-                return res.json();
-            })
-            .then((data) => {
-                console.log('Quantity updated:', data);
-            })
-            .catch((err) => {
-                console.error('Error updating quantity:', err);
+                quantity: newQty,
             });
+            onQuantityChange && onQuantityChange(_id, newQty);
+        } catch (err) {
+            console.error("Error updating quantity:", err);
+        }
     };
 
-    const currentImage = images && images.length > 0 ? images[currentIndex] : null;
+    const imgSrc = images && images.length > 0 ? `${API_BASE}${images[0]}` : "/default-avatar.png";
 
     return (
-        <div className="flex flex-col md:flex-row justify-between items-center p-4 border-b border-neutral-300 bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300">
-            <div className="flex flex-col gap-4">
-                <div className="w-40 h-40 overflow-hidden rounded-lg">
-                    {currentImage ? (
-                        <img
-                            src={`${API_BASE}${currentImage}`}
-                            alt={name}
-                            className="object-cover w-full h-full"
-                        />
-                    ) : (
-                        <div className="w-full h-full bg-gray-200 flex items-center justify-center text-gray-500">
-                            No Image
-                        </div>
-                    )}
-                </div>
-                <div className="flex gap-2 items-center justify-center">
-                    <button onClick={handleDecrement} className="p-2 bg-gray-200 hover:bg-gray-300 active:bg-gray-400 rounded-full transition-all">
-                        <IoIosRemove />
+        <div className="card !p-4 flex flex-col sm:flex-row items-center gap-4 group">
+            {/* Image */}
+            <div className="w-full sm:w-24 h-32 sm:h-24 rounded-xl overflow-hidden flex-shrink-0 bg-slate-800">
+                <img src={imgSrc} alt={name} className="w-full h-full object-cover" />
+            </div>
+
+            {/* Info */}
+            <div className="flex-1 min-w-0 text-center sm:text-left">
+                <h4 className="text-white font-semibold truncate">{name}</h4>
+                <p className="text-indigo-400 font-bold mt-1">${price.toFixed(2)}</p>
+            </div>
+
+            {/* Quantity Controls */}
+            <div className="flex items-center gap-3">
+                <div className="flex items-center gap-0 bg-slate-800/80 rounded-xl border border-slate-600/30">
+                    <button
+                        onClick={() => updateQuantity(quantity - 1)}
+                        className="w-9 h-9 flex items-center justify-center text-slate-400 hover:text-white hover:bg-slate-700 rounded-l-xl transition-colors"
+                    >
+                        <Minus size={16} />
                     </button>
-                    <span className="px-4 py-1 bg-gray-100 rounded-lg">{quantityVal}</span>
-                    <button onClick={handleIncrement} className="p-2 bg-gray-200 hover:bg-gray-300 active:bg-gray-400 rounded-full transition-all">
-                        <IoIosAdd />
+                    <span className="w-10 text-center text-white font-medium text-sm">{quantity}</span>
+                    <button
+                        onClick={() => updateQuantity(quantity + 1)}
+                        className="w-9 h-9 flex items-center justify-center text-slate-400 hover:text-white hover:bg-slate-700 rounded-r-xl transition-colors"
+                    >
+                        <Plus size={16} />
                     </button>
                 </div>
             </div>
 
-            <div className="flex flex-col items-start md:items-end mt-4 md:mt-0">
-                <h2 className="text-lg font-semibold text-neutral-800">{name}</h2>
-                <p className="text-xl font-bold text-green-600">${(price * quantityVal).toFixed(2)}</p>
+            {/* Subtotal */}
+            <div className="text-right min-w-[80px]">
+                <p className="text-xs text-slate-500">Subtotal</p>
+                <p className="text-white font-bold">${(price * quantity).toFixed(2)}</p>
             </div>
+
+            {/* Remove */}
+            {onRemove && (
+                <button
+                    onClick={() => onRemove(_id)}
+                    className="p-2 rounded-xl text-slate-500 hover:text-red-400 hover:bg-red-500/10 transition-all"
+                >
+                    <Trash2 size={18} />
+                </button>
+            )}
         </div>
     );
-}
+};
 
 CartProduct.propTypes = {
     _id: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
-    images: PropTypes.arrayOf(PropTypes.string).isRequired,
+    images: PropTypes.arrayOf(PropTypes.string),
     price: PropTypes.number.isRequired,
-    quantity: PropTypes.number.isRequired
+    quantity: PropTypes.number.isRequired,
+    onQuantityChange: PropTypes.func,
+    onRemove: PropTypes.func,
 };
+
+export default CartProduct;

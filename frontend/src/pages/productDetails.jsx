@@ -1,162 +1,224 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 import axios from "axios";
-import { IoIosAdd, IoIosRemove } from "react-icons/io";
-import { Loader, AlertCircle } from "lucide-react";
-import Nav from '../components/auth/nav'
-import { useSelector } from 'react-redux';
-import API_BASE from '../api';
+import NavBar from "../components/auth/nav";
+import API_BASE from "../api";
+import { ShoppingCart, Check, ChevronLeft, ChevronRight, Star } from "lucide-react";
 
 const ProductDetails = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
+  const email = useSelector((state) => state.user.email);
   const [product, setProduct] = useState(null);
+  const [currentImage, setCurrentImage] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [quantity, setQuantity] = useState(1);
   const [addedToCart, setAddedToCart] = useState(false);
-  const email = useSelector((state) => state.user.email);
+  const [adding, setAdding] = useState(false);
 
   useEffect(() => {
-    const fetchProduct = async () => {
-      try {
-        const response = await axios.get(
-          `${API_BASE}/api/v2/product/product/${id}`
-        );
-        setProduct(response.data.product);
+    fetch(`${API_BASE}/api/v2/product/product/${id}`)
+      .then((res) => {
+        if (!res.ok) throw new Error("Product not found");
+        return res.json();
+      })
+      .then((data) => {
+        setProduct(data.product);
         setLoading(false);
-      } catch (err) {
-        setError(err);
+      })
+      .catch((err) => {
+        setError(err.message);
         setLoading(false);
-      }
-    };
-    fetchProduct();
+      });
   }, [id]);
 
-  const handleIncrement = () => setQuantity((prev) => prev + 1);
-  const handleDecrement = () => setQuantity((prev) => (prev > 1 ? prev - 1 : 1));
-
-  const addtocart = async () => {
+  const handleAddToCart = async () => {
+    if (!email) {
+      navigate("/login");
+      return;
+    }
+    setAdding(true);
     try {
-      const response = await axios.post(
-        `${API_BASE}/api/v2/product/cart`,
-        {
-          userId: email,
-          productId: id,
-          quantity: quantity,
-        }
-      );
-      console.log("Added to cart:", response.data);
+      await axios.post(`${API_BASE}/api/v2/product/cart`, {
+        email,
+        productId: id,
+        quantity: 1,
+      });
       setAddedToCart(true);
-      setTimeout(() => setAddedToCart(false), 2000);
+      setTimeout(() => setAddedToCart(false), 3000);
     } catch (err) {
       console.error("Error adding to cart:", err);
+    } finally {
+      setAdding(false);
     }
   };
 
-  if (loading)
-    return (
-      <>
-        <Nav />
-        <div className="flex justify-center items-center h-screen">
-          <Loader className="animate-spin text-gray-500" size={40} />
-        </div>
-      </>
-    );
+  const nextImage = () => {
+    if (product.images?.length > 0) {
+      setCurrentImage((prev) => (prev + 1) % product.images.length);
+    }
+  };
+  const prevImage = () => {
+    if (product.images?.length > 0) {
+      setCurrentImage((prev) => (prev - 1 + product.images.length) % product.images.length);
+    }
+  };
 
-  if (error)
+  if (loading) {
     return (
-      <>
-        <Nav />
-        <div className="flex justify-center items-center h-screen text-red-500">
-          <AlertCircle size={40} /> <span className="ml-2">Error: {error.message}</span>
+      <div className="min-h-screen gradient-bg">
+        <NavBar />
+        <div className="flex items-center justify-center py-32">
+          <div className="w-12 h-12 border-3 border-indigo-500/20 border-t-indigo-500 rounded-full animate-spin"></div>
         </div>
-      </>
+      </div>
     );
+  }
 
-  if (!product) {
+  if (error || !product) {
     return (
-      <>
-        <Nav />
-        <div className="flex justify-center items-center h-screen">
-          <div className="text-gray-500 text-xl">No product found.</div>
+      <div className="min-h-screen gradient-bg">
+        <NavBar />
+        <div className="flex flex-col items-center justify-center py-32">
+          <p className="text-red-400 text-lg mb-4">{error || "Product not found"}</p>
+          <button onClick={() => navigate("/")} className="btn-primary">Go Home</button>
         </div>
-      </>
+      </div>
     );
   }
 
   return (
-    <>
-      <Nav />
-      <div className="bg-gradient-to-r from-purple-500 to-pink-500 min-h-screen p-6">
-        <div className="container mx-auto p-6">
-          <div className="bg-white shadow-xl rounded-lg overflow-hidden flex flex-col md:flex-row">
-            {/* Image Section */}
-            <div className="md:w-1/2 p-4">
-              {product.images?.length ? (
-                <img
-                  src={`${API_BASE}${product.images[0]}`}
-                  alt={product.name}
-                  className="w-full h-96 object-contain rounded-md"
-                />
-              ) : (
-                <div className="w-full h-96 bg-gray-200 flex items-center justify-center rounded-md">
-                  No Image Available
-                </div>
+    <div className="min-h-screen gradient-bg">
+      <NavBar />
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Breadcrumb */}
+        <button
+          onClick={() => navigate(-1)}
+          className="flex items-center gap-1 text-slate-400 hover:text-white text-sm mb-6 transition-colors"
+        >
+          <ChevronLeft size={16} /> Back
+        </button>
+
+        <div className="flex flex-col lg:flex-row gap-8">
+          {/* Image Gallery */}
+          <div className="flex-1">
+            <div className="card !p-0 overflow-hidden relative">
+              <div className="aspect-square w-full">
+                {product.images?.length > 0 ? (
+                  <img
+                    src={`${API_BASE}${product.images[currentImage]}`}
+                    alt={product.name}
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <div className="w-full h-full bg-slate-800 flex items-center justify-center">
+                    <span className="text-slate-600 text-lg">No Image</span>
+                  </div>
+                )}
+              </div>
+              {/* Nav arrows */}
+              {product.images?.length > 1 && (
+                <>
+                  <button
+                    onClick={prevImage}
+                    className="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-xl glass flex items-center justify-center text-white hover:bg-white/20 transition-all"
+                  >
+                    <ChevronLeft size={20} />
+                  </button>
+                  <button
+                    onClick={nextImage}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-xl glass flex items-center justify-center text-white hover:bg-white/20 transition-all"
+                  >
+                    <ChevronRight size={20} />
+                  </button>
+                </>
               )}
             </div>
+            {/* Thumbnails */}
+            {product.images?.length > 1 && (
+              <div className="flex gap-2 mt-4 overflow-x-auto pb-2">
+                {product.images.map((img, i) => (
+                  <button
+                    key={i}
+                    onClick={() => setCurrentImage(i)}
+                    className={`w-16 h-16 rounded-xl overflow-hidden flex-shrink-0 border-2 transition-all ${i === currentImage
+                        ? "border-indigo-500 ring-2 ring-indigo-500/30"
+                        : "border-slate-700 hover:border-slate-500"
+                      }`}
+                  >
+                    <img src={`${API_BASE}${img}`} alt="" className="w-full h-full object-cover" />
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
 
-            {/* Details Section */}
-            <div className="md:w-1/2 p-6">
-              <h1 className="text-3xl font-bold text-gray-800 mb-4">{product.name}</h1>
-              <p className="text-gray-600 mb-3">{product.description}</p>
-              <span className="text-lg font-semibold text-gray-700">Category: {product.category}</span>
-
-              {/* Tags */}
-              {product.tags && product.tags.length > 0 && (
-                <div className="mt-3">
-                  <h2 className="text-xl font-medium text-gray-700">Tags</h2>
-                  <div className="mt-2 flex flex-wrap">
-                    {product.tags.map((tag, index) => (
-                      <span
-                        key={index}
-                        className="bg-blue-100 text-blue-800 text-sm font-medium mr-2 mb-2 px-3 py-1 rounded-full"
-                      >
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
-                </div>
+          {/* Product Info */}
+          <div className="flex-1 lg:max-w-md">
+            <div className="card">
+              {/* Category badge */}
+              {product.category && (
+                <span className="badge bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 mb-4">
+                  {product.category}
+                </span>
               )}
 
-              {/* Price & Quantity */}
-              <div className="flex items-center space-x-6 my-4">
-                <p className="text-2xl font-semibold text-indigo-600">${product.price}</p>
-                <div className="flex items-center border rounded-lg px-3 py-1">
-                  <button onClick={handleDecrement} className="p-2 text-gray-700 hover:bg-gray-200 rounded-full">
-                    <IoIosRemove size={20} />
-                  </button>
-                  <span className="px-4 text-lg">{quantity}</span>
-                  <button onClick={handleIncrement} className="p-2 text-gray-700 hover:bg-gray-200 rounded-full">
-                    <IoIosAdd size={20} />
-                  </button>
-                </div>
+              <h1 className="text-2xl sm:text-3xl font-bold text-white mb-3">
+                {product.name}
+              </h1>
+
+              {/* Rating placeholder */}
+              <div className="flex items-center gap-1 mb-4">
+                {[...Array(5)].map((_, i) => (
+                  <Star key={i} size={16} className={i < 4 ? "text-amber-400 fill-amber-400" : "text-slate-600"} />
+                ))}
+                <span className="text-slate-400 text-sm ml-2">4.0</span>
               </div>
 
-              {/* Action Buttons */}
+              {/* Price */}
+              <div className="mb-6">
+                <span className="text-3xl font-bold text-gradient">${product.price.toFixed(2)}</span>
+              </div>
+
+              {/* Description */}
+              <div className="mb-6">
+                <h3 className="text-sm font-medium text-slate-300 mb-2">Description</h3>
+                <p className="text-slate-400 leading-relaxed">{product.description}</p>
+              </div>
+
+              {/* Stock */}
+              <div className="flex items-center gap-2 mb-6">
+                <div className="w-2 h-2 rounded-full bg-emerald-400"></div>
+                <span className="text-sm text-emerald-400">In Stock</span>
+              </div>
+
+              {/* Add to Cart */}
               <button
-                className={`px-6 py-2 rounded-full transition-transform transform hover:-translate-y-1 ${addedToCart
-                    ? 'bg-green-500 text-white'
-                    : 'bg-indigo-600 text-white hover:bg-indigo-700'
+                onClick={handleAddToCart}
+                disabled={adding || addedToCart}
+                className={`w-full py-3.5 rounded-xl font-medium flex items-center justify-center gap-2 transition-all duration-300 ${addedToCart
+                    ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30"
+                    : "btn-primary disabled:opacity-50"
                   }`}
-                onClick={addtocart}
               >
-                {addedToCart ? '✓ Added to Cart' : 'Add to Cart'}
+                {addedToCart ? (
+                  <>
+                    <Check size={20} /> Added to Cart
+                  </>
+                ) : adding ? (
+                  <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                ) : (
+                  <>
+                    <ShoppingCart size={20} /> Add to Cart
+                  </>
+                )}
               </button>
             </div>
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 
