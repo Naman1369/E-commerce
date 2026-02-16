@@ -1,0 +1,25 @@
+{
+  "name": "e-commerce",
+  "version": "1.0.0",
+  "description": "ShopNest - Full-stack MERN E-Commerce Application",
+  "private": true,
+  "scripts": {
+    "install:backend": "cd backend && npm install",
+    "install:frontend": "cd frontend && npm install",
+    "install:all": "npm run install:backend && npm run install:frontend",
+    "dev:backend": "cd backend && npm run dev",
+    "dev:frontend": "cd frontend && npm run dev",
+    "build": "cd frontend && npm run build",
+    "start": "cd backend && npm start",
+    "render-build": "cd frontend && npm install && npm run build && cd ../backend && npm install"
+  },
+  "keywords": [
+    "ecommerce",
+    "mern",
+    "react",
+    "node",
+    "mongodb"
+  ],
+  "author": "Naman",
+  "license": "ISC"
+}
