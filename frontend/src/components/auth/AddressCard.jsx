@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types'
-export default function addressCard({
-    _id,
+
+export default function AddressCard({
     country,
     city,
     address1,
@@ -11,7 +11,7 @@ export default function addressCard({
     return (
         <div className="w-full h-max bg-transparent p-5 rounded-lg border border-neutral-600 grid grid-cols-12 gap-5">
             <div className="col-span-12 sm:col-span-6 md:col-span-4 lg:col-span-3 xl:col-span-2">
-                <div className="w-full h-max bg-neutral-700 rounded-lg flex flex-col gap-y-2">
+                <div className="w-full h-max bg-neutral-700 rounded-lg flex flex-col gap-y-2 p-3">
                     <div className="w-full h-max break-all text-xl text-neutral-200">
                         Country
                     </div>
@@ -21,7 +21,7 @@ export default function addressCard({
                 </div>
             </div>
             <div className="col-span-12 sm:col-span-6 md:col-span-4 lg:col-span-3 xl:col-span-2">
-                <div className="w-full h-max bg-neutral-700 rounded-lg flex flex-col gap-y-2">
+                <div className="w-full h-max bg-neutral-700 rounded-lg flex flex-col gap-y-2 p-3">
                     <div className="w-full h-max break-all text-xl text-neutral-200">
                         City
                     </div>
@@ -31,7 +31,7 @@ export default function addressCard({
                 </div>
             </div>
             <div className="col-span-12 sm:col-span-6 md:col-span-4 lg:col-span-3 xl:col-span-2">
-                <div className="w-full h-max bg-neutral-700 rounded-lg flex flex-col gap-y-2">
+                <div className="w-full h-max bg-neutral-700 rounded-lg flex flex-col gap-y-2 p-3">
                     <div className="w-full h-max break-all text-xl text-neutral-200">
                         Address 1
                     </div>
@@ -41,17 +41,17 @@ export default function addressCard({
                 </div>
             </div>
             <div className="col-span-12 sm:col-span-6 md:col-span-4 lg:col-span-3 xl:col-span-2">
-                <div className="w-full h-max bg-neutral-700 rounded-lg flex flex-col gap-y-2">
+                <div className="w-full h-max bg-neutral-700 rounded-lg flex flex-col gap-y-2 p-3">
                     <div className="w-full h-max break-all text-xl text-neutral-200">
                         Address 2
                     </div>
                     <div className="w-full h-max break-all text-lg font-light text-neutral-200">
-                        {address2}
+                        {address2 || 'N/A'}
                     </div>
                 </div>
             </div>
             <div className="col-span-12 sm:col-span-6 md:col-span-4 lg:col-span-3 xl:col-span-2">
-                <div className="w-full h-max bg-neutral-700 rounded-lg flex flex-col gap-y-2">
+                <div className="w-full h-max bg-neutral-700 rounded-lg flex flex-col gap-y-2 p-3">
                     <div className="w-full h-max break-all text-xl text-neutral-200">
                         Zip Code
                     </div>
@@ -61,7 +61,7 @@ export default function addressCard({
                 </div>
             </div>
             <div className="col-span-12 sm:col-span-6 md:col-span-4 lg:col-span-3 xl:col-span-2">
-                <div className="w-full h-max bg-neutral-700 rounded-lg flex flex-col gap-y-2">
+                <div className="w-full h-max bg-neutral-700 rounded-lg flex flex-col gap-y-2 p-3">
                     <div className="w-full h-max break-all text-xl text-neutral-200">
                         Address Type
                     </div>
@@ -74,12 +74,11 @@ export default function addressCard({
     );
 }
 
-addressCard.propTypes = {
-    _id: PropTypes.string.isRequired,
-    country: PropTypes.string.isRequired,
-    city: PropTypes.string.isRequired,
-    address1: PropTypes.string.isRequired,
-    address2: PropTypes.string.isRequired,
-    zipCode: PropTypes.number.isRequired,
-    addressType: PropTypes.string.isRequired
+AddressCard.propTypes = {
+    country: PropTypes.string,
+    city: PropTypes.string,
+    address1: PropTypes.string,
+    address2: PropTypes.string,
+    zipCode: PropTypes.number,
+    addressType: PropTypes.string
 };

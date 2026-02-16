@@ -1,36 +1,36 @@
 import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types"
-import {useNavigate} from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
+import API_BASE from '../../api';
 
-const Myproduct=({_id,name,images,description,price})=>{
-    const[currentIndex,setCurrentIndex]=useState(0)
-    const navigate=useNavigate()
+const Myproduct = ({ _id, name, images, description, price }) => {
+    const [currentIndex, setCurrentIndex] = useState(0)
+    const navigate = useNavigate()
 
-    useEffect(()=>{
-        if(!images||images.length === 0) return "No Images";
-        const interval=setInterval(()=>{
-            setCurrentIndex((prevIndex)=>(prevIndex+1)%images.length)
-        },2000);
-        return ()=>clearInterval(interval)
-    },[images])
+    useEffect(() => {
+        if (!images || images.length === 0) return;
+        const interval = setInterval(() => {
+            setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length)
+        }, 2000);
+        return () => clearInterval(interval)
+    }, [images])
 
-    const handleEdit=()=>{
+    const handleEdit = () => {
         navigate(`/create-product/${_id}`)
     }
 
-    const handleDelete=async ()=>{
-        try{
-            const response=await axios.delete(`http://localhost:8000/api/v2/product/delete-product/${_id}`);
-            if(response.status===200){
+    const handleDelete = async () => {
+        try {
+            const response = await axios.delete(`${API_BASE}/api/v2/product/delete-product/${_id}`);
+            if (response.status === 200) {
                 alert("Product Deleted");
                 window.location.reload();
             }
-        }catch(err){
+        } catch (err) {
             console.error(`Error deleting product:${err}`);
-            alert("Falied to delete the product")
+            alert("Failed to delete the product")
         }
-
     }
 
     const currentImage = images && images.length > 0 ? images[currentIndex] : null
@@ -40,7 +40,7 @@ const Myproduct=({_id,name,images,description,price})=>{
             <div className="w-full">
                 {currentImage && (
                     <img
-                        src={`http://localhost:8000${currentImage}`}
+                        src={`${API_BASE}${currentImage}`}
                         alt={name}
                         className="w-full h-56 object-cover rounded-lg mb-2"
                     />
@@ -51,7 +51,7 @@ const Myproduct=({_id,name,images,description,price})=>{
             <div className="w-full mt-4">
                 <p className="text-lg font-bold my-2">${price.toFixed(2)}</p>
                 <button
-                    className="w-full text-white px-4 py-2 rounded-md bg-neutral-900 hover:bg-neutral-700 transition duration-300"
+                    className="w-full text-white px-4 py-2 rounded-md bg-neutral-900 hover:bg-neutral-700 transition duration-300 mb-2"
                     onClick={handleEdit}
                 >
                     Edit
@@ -67,13 +67,12 @@ const Myproduct=({_id,name,images,description,price})=>{
     );
 }
 
-Myproduct.propTypes={
-    _id:PropTypes.string.isRequired,
-    name:PropTypes.string.isRequired,
-    images:PropTypes.arrayOf(PropTypes.string).isRequired,
-    description:PropTypes.string.isRequired,
-    price:PropTypes.number.isRequired
+Myproduct.propTypes = {
+    _id: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired,
+    images: PropTypes.arrayOf(PropTypes.string).isRequired,
+    description: PropTypes.string.isRequired,
+    price: PropTypes.number.isRequired
 }
 
 export default Myproduct;
-

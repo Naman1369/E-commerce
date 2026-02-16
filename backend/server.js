@@ -1,21 +1,29 @@
-if(process.env.NODE_ENV !== "PRODUCTION"){
+if (process.env.NODE_ENV !== "PRODUCTION") {
     require('dotenv').config({
-        path:'config/.env'
+        path: 'config/.env'
     })
 }
 
-const app=require('./App')
+const app = require('./App')
 
-//Handling uncaught execptions
-
-process.on("uncaugthExecption",(err)=>{
-    console.log(`Error:${err.message}`)
-    console.log(`shutting down the server for handling uncaught exception`)
+// Handling uncaught exceptions
+process.on("uncaughtException", (err) => {
+    console.log(`Error: ${err.message}`)
+    console.log(`Shutting down the server for handling uncaught exception`)
+    process.exit(1)
 })
 
+// Create server
+const PORT = process.env.PORT || 8000;
+const server = app.listen(PORT, () => {
+    console.log(`Server is running on http://localhost:${PORT}`)
+})
 
-
-//create server
-const server = app.listen(process.env.PORT, ()=>{
-    console.log(`Server is running on http://localhost:${process.env.PORT}`)
+// Unhandled promise rejection
+process.on("unhandledRejection", (err) => {
+    console.log(`Error: ${err.message}`)
+    console.log(`Shutting down the server for unhandled promise rejection`)
+    server.close(() => {
+        process.exit(1)
+    })
 })

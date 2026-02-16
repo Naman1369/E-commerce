@@ -1,144 +1,121 @@
-import React, { useState } from "react";
-import axios from "axios";
-import { useNavigate } from "react-router-dom";
-import Nav from "../components/auth/nav";
-import { useSelector } from 'react-redux'; //import useSelector
+import React, { useState } from 'react';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import Nav from '../components/auth/nav';
+import { useSelector } from 'react-redux';
+import API_BASE from '../api';
 
 const CreateAddress = () => {
-    const navigate = useNavigate();
+    const [country, setCountry] = useState('');
+    const [city, setCity] = useState('');
+    const [address1, setAddress1] = useState('');
+    const [address2, setAddress2] = useState('');
+    const [zipCode, setZipCode] = useState('');
+    const [addressType, setAddressType] = useState('');
 
-    const [country, setCountry] = useState("");
-    const [city, setCity] = useState("");
-    const [address1, setAddress1] = useState("");
-    const [address2, setAddress2] = useState("");
-    const [zipCode, setZipCode] = useState("");
-    const [addressType, setAddressType] = useState("");
+    const navigate = useNavigate();
     const email = useSelector((state) => state.user.email);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const addressData = {
-            country,
-            city,
-            address1,
-            address2,
-            zipCode,
-            addressType,
-            email,
-        };
-
         try {
-            const response = await axios.post(
-                "http://localhost:8000/api/v2/user/add-address",
-                addressData,
-                {
-                    headers: { "Content-Type": "application/json" },
-                }
-            );
-            if (response.status === 201) {
-                alert("Address added successfully!");
-                navigate("/profile");
+            const response = await axios.post(`${API_BASE}/api/v2/user/add-address`, {
+                email,
+                country,
+                city,
+                address1,
+                address2,
+                zipCode: Number(zipCode),
+                addressType
+            });
+            if (response.status === 200 || response.status === 201) {
+                alert('Address added successfully!');
+                navigate('/profile');
             }
         } catch (err) {
-            console.error("Error adding address:", err);
-            alert("Failed to add address. Please check the data and try again.");
+            console.error('Error adding address:', err);
+            alert('Failed to add address. Please try again.');
         }
     };
 
-return (
+    return (
         <>
             <Nav />
-            <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-blue-100 via-blue-200 to-blue-300">
-                <div className="w-[90%] max-w-[500px] bg-white shadow-md h-auto rounded-md p-6 mx-auto mt-8 sm:mt-16 lg:mt-24">
-                    <h5 className="text-[24px] font-bold text-center mb-4 text-gray-700">
-                        Add Address
-                    </h5>
-                    <form onSubmit={handleSubmit}>
-                        <div className="mt-4">
-                            <label className="pb-1 block text-gray-600 font-medium">
-                                Country <span className="text-red-500">*</span>
-                            </label>
+            <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+                <div className="max-w-md w-full bg-white p-8 rounded-lg shadow-lg">
+                    <h2 className="text-2xl font-bold text-center text-gray-900 mb-6">Add New Address</h2>
+                    <form onSubmit={handleSubmit} className="space-y-4">
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Country</label>
                             <input
                                 type="text"
+                                required
                                 value={country}
-                                className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 hover:shadow-lg transition-shadow duration-200"
                                 onChange={(e) => setCountry(e.target.value)}
+                                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                                 placeholder="Enter country"
-                                required
                             />
                         </div>
-
-                        <div className="mt-4">
-                            <label className="pb-1 block text-gray-600 font-medium">
-                                City <span className="text-red-500">*</span>
-                            </label>
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">City</label>
                             <input
                                 type="text"
+                                required
                                 value={city}
-                                className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 hover:shadow-lg transition-shadow duration-200"
                                 onChange={(e) => setCity(e.target.value)}
+                                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                                 placeholder="Enter city"
-                                required
                             />
                         </div>
-
-                        <div className="mt-4">
-                            <label className="pb-1 block text-gray-600 font-medium">
-                                Address 1 <span className="text-red-500">*</span>
-                            </label>
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Address Line 1</label>
                             <input
                                 type="text"
-                                value={address1}
-                                className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 hover:shadow-lg transition-shadow duration-200"
-                                onChange={(e) => setAddress1(e.target.value)}
-                                placeholder="Enter address 1"
                                 required
+                                value={address1}
+                                onChange={(e) => setAddress1(e.target.value)}
+                                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                placeholder="Enter address line 1"
                             />
                         </div>
-
-                        <div className="mt-4">
-                            <label className="pb-1 block text-gray-600 font-medium">
-                                Address 2
-                            </label>
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Address Line 2</label>
                             <input
                                 type="text"
                                 value={address2}
-                                className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 hover:shadow-lg transition-shadow duration-200"
                                 onChange={(e) => setAddress2(e.target.value)}
-                                placeholder="Enter address 2 (optional)"
+                                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                placeholder="Enter address line 2 (optional)"
                             />
                         </div>
-                        <div className="mt-4">
-                            <label className="pb-1 block text-gray-600 font-medium">
-                                Zip Code <span className="text-red-500">*</span>
-                            </label>
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Zip Code</label>
                             <input
                                 type="number"
+                                required
                                 value={zipCode}
-                                className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 hover:shadow-lg transition-shadow duration-200"
                                 onChange={(e) => setZipCode(e.target.value)}
+                                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                                 placeholder="Enter zip code"
-                                required
                             />
                         </div>
-
-                        <div className="mt-4">
-                            <label className="pb-1 block text-gray-600 font-medium">
-                                Address Type <span className="text-red-500">*</span>
-                            </label>
-                            <input
-                                type="text"
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Address Type</label>
+                            <select
+                                required
                                 value={addressType}
-                                className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 hover:shadow-lg transition-shadow duration-200"
                                 onChange={(e) => setAddressType(e.target.value)}
-                                placeholder="Enter address type (e.g., Home, Work)"
-                                required
-                            />
+                                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                            >
+                                <option value="">Select Type</option>
+                                <option value="Home">Home</option>
+                                <option value="Office">Office</option>
+                                <option value="Other">Other</option>
+                            </select>
                         </div>
-
                         <button
                             type="submit"
-                            className="w-full mt-6 bg-blue-500 text-white p-3 rounded-md hover:bg-blue-600 transition-colors duration-200"
+                            className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors duration-200 font-medium"
                         >
                             Add Address
                         </button>

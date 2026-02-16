@@ -3,7 +3,7 @@ import AddressCard from "../components/auth/AddressCard";
 import NavBar from "../components/auth/nav";
 import { useNavigate } from "react-router-dom"
 import { useSelector } from 'react-redux';
-
+import API_BASE from '../api';
 
 export default function Profile() {
 	const [personalDetails, setPersonalDetails] = useState({
@@ -18,8 +18,9 @@ export default function Profile() {
 	const [addresses, setAddresses] = useState([]);
 
 	useEffect(() => {
+		if (!email) return;
 		fetch(
-			`http://localhost:8000/api/v2/user/profile?email=${email}`,
+			`${API_BASE}/api/v2/user/profile?email=${email}`,
 			{
 				method: "GET",
 				headers: {
@@ -36,15 +37,15 @@ export default function Profile() {
 			.then((data) => {
 				setPersonalDetails(data.user);
 				setAddresses(data.addresses);
-				console.log("User fetched:", data.user);
-				console.log("Addresses fetched:", data.addresses);
+			})
+			.catch((err) => {
+				console.error("Error fetching profile:", err);
 			});
-	}, []);
+	}, [email]);
 
 	const handleAddAddress = () => {
-        navigate("/create-address");
-    };
-
+		navigate("/create-address");
+	};
 
 	return (
 		<>
@@ -63,16 +64,14 @@ export default function Profile() {
 									PICTURE
 								</div>
 								<img
-        src={personalDetails.avatarUrl ? `http://localhost:8000/${personalDetails.avatarUrl}` : `https://cdn.vectorstock.com/i/500p/17/61/male-avatar-profile-picture-vector-10211761.jpg`}
-        alt="profile"
-        className="w-40 h-40 rounded-full"                   
-        onError={(e) => {
-            e.target.onerror = null; // Prevents infinite loop if the default image also fails
-            e.target.src = `https://cdn.vectorstock.com/i/500p/17/61/male-avatar-profile-picture-vector-10211761.jpg`;
-			console.log("Avatar URL:", personalDetails.avatarUrl);
-
-        }}
-    />
+									src={personalDetails.avatarUrl ? `${API_BASE}/${personalDetails.avatarUrl}` : `https://cdn.vectorstock.com/i/500p/17/61/male-avatar-profile-picture-vector-10211761.jpg`}
+									alt="profile"
+									className="w-40 h-40 rounded-full object-cover"
+									onError={(e) => {
+										e.target.onerror = null;
+										e.target.src = `https://cdn.vectorstock.com/i/500p/17/61/male-avatar-profile-picture-vector-10211761.jpg`;
+									}}
+								/>
 							</div>
 							<div className="h-max md:flex-grow">
 								<div className="w-full h-max flex flex-col justify-center items-center gap-y-3">
@@ -97,7 +96,7 @@ export default function Profile() {
 											MOBILE
 										</div>
 										<div className="text-lg font-light text-neutral-100 text-left break-all">
-											{personalDetails.phoneNumber}
+											{personalDetails.phoneNumber || 'Not set'}
 										</div>
 									</div>
 								</div>
@@ -111,9 +110,9 @@ export default function Profile() {
 							</h1>
 						</div>
 						<div className="w-full h-max p-5">
-							<button className="w-max px-3 py-2 bg-neutral-600 text-neutral-100 rounded-md text-center hover:bg-neutral-100 hover:text-black transition-all duration-100"		
-							onClick={handleAddAddress}				
-								>
+							<button className="w-max px-3 py-2 bg-neutral-600 text-neutral-100 rounded-md text-center hover:bg-neutral-100 hover:text-black transition-all duration-100"
+								onClick={handleAddAddress}
+							>
 								Add Address
 							</button>
 						</div>

@@ -1,0 +1,28 @@
+# Dependencies
+node_modules/
+
+# Environment files
+.env
+backend/config/.env
+
+# Build output
+frontend/dist/
+
+# Uploads (user-generated content)
+backend/uploads/
+backend/products/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+
+# Root lockfiles (keep individual package lockfiles)
+package-lock.json

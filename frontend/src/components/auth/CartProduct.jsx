@@ -1,9 +1,8 @@
-
 import React, { useState, useEffect } from "react";
 import { IoIosAdd, IoIosRemove } from "react-icons/io";
 import PropTypes from "prop-types";
 import { useSelector } from 'react-redux';
-
+import API_BASE from '../../api';
 
 export default function CartProduct({ _id, name, images, quantity, price }) {
     const [currentIndex, setCurrentIndex] = useState(0);
@@ -31,7 +30,7 @@ export default function CartProduct({ _id, name, images, quantity, price }) {
     };
 
     const updateQuantityVal = (quantity) => {
-        fetch('http://localhost:8000/api/v2/product/cartproduct/quantity', {
+        fetch(`${API_BASE}/api/v2/product/cartproduct/quantity`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -49,24 +48,30 @@ export default function CartProduct({ _id, name, images, quantity, price }) {
                 return res.json();
             })
             .then((data) => {
-                console.log('quantityVal updated:', data);
+                console.log('Quantity updated:', data);
             })
             .catch((err) => {
-                console.error('Error updating quantityVal:', err);
+                console.error('Error updating quantity:', err);
             });
     };
 
-    const currentImage = images[currentIndex];
+    const currentImage = images && images.length > 0 ? images[currentIndex] : null;
 
     return (
         <div className="flex flex-col md:flex-row justify-between items-center p-4 border-b border-neutral-300 bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300">
             <div className="flex flex-col gap-4">
                 <div className="w-40 h-40 overflow-hidden rounded-lg">
-                    <img
-                        src={`http://localhost:8000${currentImage}`}
-                        alt={name}
-                        className="object-cover w-full h-full"
-                    />
+                    {currentImage ? (
+                        <img
+                            src={`${API_BASE}${currentImage}`}
+                            alt={name}
+                            className="object-cover w-full h-full"
+                        />
+                    ) : (
+                        <div className="w-full h-full bg-gray-200 flex items-center justify-center text-gray-500">
+                            No Image
+                        </div>
+                    )}
                 </div>
                 <div className="flex gap-2 items-center justify-center">
                     <button onClick={handleDecrement} className="p-2 bg-gray-200 hover:bg-gray-300 active:bg-gray-400 rounded-full transition-all">
@@ -81,17 +86,16 @@ export default function CartProduct({ _id, name, images, quantity, price }) {
 
             <div className="flex flex-col items-start md:items-end mt-4 md:mt-0">
                 <h2 className="text-lg font-semibold text-neutral-800">{name}</h2>
-                <p className="text-xl font-bold text-green-600">${price * quantityVal}</p>
+                <p className="text-xl font-bold text-green-600">${(price * quantityVal).toFixed(2)}</p>
             </div>
         </div>
     );
 }
 
 CartProduct.propTypes = {
-  _id: PropTypes.string.isRequired,
-  name: PropTypes.string.isRequired,
-  images: PropTypes.arrayOf(PropTypes.string).isRequired,
-  description: PropTypes.string.isRequired,
-  price: PropTypes.number.isRequired,
-  quantity: PropTypes.number.isRequired
+    _id: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired,
+    images: PropTypes.arrayOf(PropTypes.string).isRequired,
+    price: PropTypes.number.isRequired,
+    quantity: PropTypes.number.isRequired
 };

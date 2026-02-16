@@ -13,7 +13,7 @@ const NavBar = () => {
     <nav className="bg-gradient-to-r from-blue-500 to-indigo-600 shadow-lg p-4 sticky top-0 z-50">
       <div className="max-w-7xl mx-auto flex justify-between items-center">
         {/* Logo */}
-        <h1 className="text-white text-2xl font-bold tracking-wide">Brand</h1>
+        <h1 className="text-white text-2xl font-bold tracking-wide">ShopNest</h1>
 
         {/* Desktop Menu */}
         <div className="hidden md:flex space-x-6">
@@ -23,14 +23,13 @@ const NavBar = () => {
             { name: "Add Products", path: "/create-product" },
             { name: "Cart", path: "/cart" },
             { name: "Profile", path: "/profile" },
-            { name: "My Orders", path:"/myorders"}
+            { name: "My Orders", path: "/myorders" }
           ].map((link) => (
             <NavLink
               key={link.path}
               to={link.path}
               className={({ isActive }) =>
-                `px-4 py-2 rounded-md text-lg transition-all duration-300 ${
-                  isActive ? "bg-white text-blue-600 shadow-md" : "text-gray-200 hover:text-white"
+                `px-4 py-2 rounded-md text-lg transition-all duration-300 ${isActive ? "bg-white text-blue-600 shadow-md" : "text-gray-200 hover:text-white"
                 }`
               }
             >
@@ -55,14 +54,13 @@ const NavBar = () => {
               { name: "Add Products", path: "/create-product" },
               { name: "Cart", path: "/cart" },
               { name: "Profile", path: "/profile" },
-              { name: "My Orders", path:"/myorders"},
+              { name: "My Orders", path: "/myorders" },
             ].map((link) => (
               <li key={link.path}>
                 <NavLink
                   to={link.path}
                   className={({ isActive }) =>
-                    `block px-4 py-2 text-lg rounded-md transition-all duration-300 ${
-                      isActive ? "bg-white text-indigo-700" : "text-gray-200 hover:text-white"
+                    `block px-4 py-2 text-lg rounded-md transition-all duration-300 ${isActive ? "bg-white text-indigo-700" : "text-gray-200 hover:text-white"
                     }`
                   }
                   onClick={() => setIsOpen(false)}
