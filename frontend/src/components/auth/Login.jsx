@@ -1,83 +1,151 @@
 import { React, useState } from "react";
-import { Link, useNavigate } from 'react-router-dom';
-import axios from 'axios';
-import { useDispatch } from 'react-redux';
-import { setemail } from "../../../store/userAction"
-import API_BASE from '../../api';
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
+import { useDispatch } from "react-redux";
+import { setemail } from "../../../store/userAction";
+import API_BASE from "../../api";
+import { ShoppingBag, Mail, Lock, Eye, EyeOff } from "lucide-react";
 
-// Ensure axios sends cookies with requests
 axios.defaults.withCredentials = true;
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
-
   const dispatch = useDispatch();
 
-  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
+    setError("");
     try {
-      const response = await axios.post(`${API_BASE}/api/v2/user/login`, { email, password });
-
+      const response = await axios.post(`${API_BASE}/api/v2/user/login`, {
+        email,
+        password,
+      });
       dispatch(setemail(email));
-      console.log(response.data);
       navigate("/");
     } catch (error) {
-      setError("There was an error logging in. Please check your credentials.");
-      console.error("There was an error logging in!", error);
+      setError("Invalid credentials. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
-      <div className="sm:mx-auto sm:w-full sm:max-w-md">
-        <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-          Login to your account
-        </h2>
+    <div className="min-h-screen gradient-bg flex items-center justify-center p-4">
+      {/* Background decorations */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl"></div>
       </div>
-      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
-          <form className="space-y-6" onSubmit={handleSubmit}>
+
+      <div className="w-full max-w-md relative animate-slide-up">
+        {/* Logo */}
+        <div className="text-center mb-8">
+          <div className="inline-flex items-center gap-3 mb-4">
+            <div className="w-12 h-12 rounded-2xl gradient-primary flex items-center justify-center shadow-lg shadow-indigo-500/30">
+              <ShoppingBag size={24} className="text-white" />
+            </div>
+            <span className="text-3xl font-bold text-gradient">ShopNest</span>
+          </div>
+          <p className="text-slate-400">Welcome back! Sign in to continue.</p>
+        </div>
+
+        {/* Card */}
+        <div className="card">
+          <form className="space-y-5" onSubmit={handleSubmit}>
             {error && (
-              <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md text-sm">
+              <div className="px-4 py-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm animate-fade-in">
                 {error}
               </div>
             )}
+
+            {/* Email */}
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email address</label>
-              <div className="mt-1">
-                <input type="email" name="email" placeholder="Enter email" autoComplete="email" required value={email}
+              <label className="block text-sm font-medium text-slate-300 mb-2">
+                Email Address
+              </label>
+              <div className="relative">
+                <Mail
+                  size={18}
+                  className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500"
+                />
+                <input
+                  type="email"
+                  placeholder="you@example.com"
+                  required
+                  value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
+                  className="input-field !pl-11"
+                />
               </div>
             </div>
+
+            {/* Password */}
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700">Password</label>
-              <div className="mt-1">
-                <input type="password" name="password" placeholder="Password" autoComplete="current-password" required value={password}
+              <label className="block text-sm font-medium text-slate-300 mb-2">
+                Password
+              </label>
+              <div className="relative">
+                <Lock
+                  size={18}
+                  className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500"
+                />
+                <input
+                  type={showPassword ? "text" : "password"}
+                  placeholder="••••••••"
+                  required
+                  value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
+                  className="input-field !pl-11 !pr-11"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 transition-colors"
+                >
+                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                </button>
               </div>
             </div>
+
+            {/* Remember + Forgot */}
             <div className="flex justify-between items-center">
-              <div className="flex items-center">
-                <input type="checkbox" name="remember-me" id="remember-me"
-                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded" />
-                <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-900">Remember me</label>
-              </div>
-              <div className="text-sm">
-                <a href="#" className="font-medium text-blue-600 hover:text-blue-500">Forgot Password?</a>
-              </div>
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  className="w-4 h-4 rounded border-slate-600 bg-slate-800 text-indigo-500 focus:ring-indigo-500/50"
+                />
+                <span className="text-sm text-slate-400">Remember me</span>
+              </label>
             </div>
-            <div>
-              <button type="submit" className="relative w-full h-[40px] flex justify-center items-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 transition-colors">
-                Submit
-              </button>
-            </div>
-            <p className="text-center text-gray-600">Don't have an account? <Link to={'/signup'} className="text-blue-600 hover:text-blue-500 font-medium">Sign up</Link>
+
+            {/* Submit */}
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full btn-primary !py-3 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {loading ? (
+                <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+              ) : (
+                "Sign In"
+              )}
+            </button>
+
+            {/* Signup link */}
+            <p className="text-center text-slate-400 text-sm">
+              Don't have an account?{" "}
+              <Link
+                to="/signup"
+                className="text-indigo-400 hover:text-indigo-300 font-medium transition-colors"
+              >
+                Create one
+              </Link>
             </p>
           </form>
         </div>
